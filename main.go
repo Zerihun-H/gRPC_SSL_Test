@@ -29,7 +29,7 @@ func main() {
 		grpc.Creds(credentials.NewServerTLSFromCert(&cert)),
 	}
 
-	lis, err := net.Listen("tcp", ":50051")
+	lis, err := net.Listen("tcp", ":8888")
 	if err != nil {
 		log.Fatalln(err)
 	}
