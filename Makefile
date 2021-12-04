@@ -1,5 +1,5 @@
 proto: ## Compile protobuf file to generate Go source code for gRPC Services
-	protoc --go_out=plugins=grpc:. credit/*.proto
+	protoc --go_out=plugins=grpc:. helloworld/*.proto
 ##  protoc --go_out=plugins=grpc:. *.proto
 
 ID?=1
@@ -32,7 +32,7 @@ ssl: ## Create certificates to encrypt the gRPC connection
 	openssl x509 -req -in service.csr -CA ca.cert -CAkey ca.key -CAcreateserial \
 		-out service.pem -days 365 -sha256 -extfile certificate.conf -extensions req_ext
 	clear
-	
+
 rmssl:
 	rm ca.* service.*
 	clear

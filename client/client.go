@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"gRPCTest/credit"
+	pb "gRPCTest/helloworld"
 	"log"
 	"time"
 
@@ -23,23 +23,20 @@ func main() {
 		grpc.WithBlock(),
 	}
 
-	conn, err := grpc.Dial(":50051", opts...)
+	conn, err := grpc.Dial(":8888", opts...)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	defer conn.Close()
 
-	client := credit.NewCreditServiceClient(conn)
-
-	request := &credit.CreditRequest{Amount: 1990.01}
+	client := pb.NewGreeterClient(conn)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-
-	response, err := client.Credit(ctx, request)
+	r, err := client.SayHello(ctx, &pb.HelloRequest{Name: "Zerihun"})
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalf("could not greet: %v", err)
 	}
+	log.Printf("Greeting: %s", r.GetMessage())
 
-	log.Println("Response:", response.GetConfirmation())
 }

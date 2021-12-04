@@ -3,8 +3,7 @@ package main
 import (
 	"context"
 	"crypto/tls"
-	"fmt"
-	"gRPCTest/credit"
+	pb "gRPCTest/helloworld"
 	"log"
 	"net"
 
@@ -12,14 +11,15 @@ import (
 	"google.golang.org/grpc/credentials"
 )
 
+// server is used to implement helloworld.GreeterServer.
 type server struct {
-	credit.UnimplementedCreditServiceServer
+	pb.UnimplementedGreeterServer
 }
 
 func main() {
 	log.Println("Server running ...")
 
-	cert, err := tls.LoadX509KeyPair("ca.cert", "ca.key")
+	cert, err := tls.LoadX509KeyPair("service.pem", "service.key")
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -35,13 +35,13 @@ func main() {
 	}
 
 	srv := grpc.NewServer(opts...)
-	credit.RegisterCreditServiceServer(srv, &server{})
+	pb.RegisterGreeterServer(srv, &server{})
 
 	log.Fatalln(srv.Serve(lis))
 }
 
-func (s *server) Credit(ctx context.Context, request *credit.CreditRequest) (*credit.CreditResponse, error) {
-	log.Println(fmt.Sprintf("Request: %g", request.GetAmount()))
-
-	return &credit.CreditResponse{Confirmation: fmt.Sprintf("Credited %g", request.GetAmount())}, nil
+// SayHello implements helloworld.GreeterServer
+func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+	log.Printf("Received: %v", in.GetName())
+	return &pb.HelloReply{Message: "Hello " + in.GetName()}, nil
 }
