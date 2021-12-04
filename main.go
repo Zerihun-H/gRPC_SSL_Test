@@ -17,8 +17,8 @@ import (
 // Cert file details
 const (
 	AkbarCA    = "cert/adinterface.adsrecognition.com.crt"
-	ServerCert = "cert/server.crt"
-	ServerKey  = "cert/server.key"
+	ServerCert = "/var/www/SSL/server.crt"
+	ServerKey  = "/var/www/SSL/server.key"
 	ServerName = "server"
 )
 
@@ -33,7 +33,7 @@ func main() {
 	// Load certs from the disk.
 	cert, err := tls.LoadX509KeyPair(ServerCert, ServerKey)
 	if err != nil {
-		fmt.Errorf("could not server key pairs: %s", err)
+		fmt.Printf("could not server key pairs: %s", err)
 	}
 
 	// Create certpool from the CA
@@ -60,7 +60,7 @@ func main() {
 		grpc.Creds(creds),
 	}
 
-	lis, err := net.Listen("tcp", ":8888")
+	lis, err := net.Listen("tcp", ":8383")
 	if err != nil {
 		log.Fatalln(err)
 	}
