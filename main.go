@@ -16,7 +16,7 @@ import (
 
 // Cert file details
 const (
-	AkbarCA    = "cert/adinterface.adsrecognition.com.crt"
+	AkbarCA    = "/var/www/SSL/adinterface.adsrecognition.com.crt"
 	ServerCert = "/var/www/SSL/server.crt"
 	ServerKey  = "/var/www/SSL/server.key"
 	ServerName = "server"

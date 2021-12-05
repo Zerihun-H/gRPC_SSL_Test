@@ -26,7 +26,7 @@ install-docker: ## Install Docker
 ssl: ## Create certificates to encrypt the gRPC connection
 #	rm -rf conf && mkdir SSL && cd SSL
 	openssl genrsa -out ca.key 4096
-	openssl req -new -x509 -key ca.key -sha256 -subj "/C=US/ST=NJ/O=CA, Inc." -days 365 -out ca.cert
+	openssl req -new -x509 -key ca.key -sha256 -subj "/C=SK/ST=NJ/O=CA, Inc." -days 365 -out ca.cert
 	openssl genrsa -out service.key 4096
 	openssl req -new -key service.key -out service.csr -config certificate.conf
 	openssl x509 -req -in service.csr -CA ca.cert -CAkey ca.key -CAcreateserial \
