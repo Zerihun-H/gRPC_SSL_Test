@@ -2,11 +2,7 @@ package main
 
 import (
 	"context"
-	"crypto/tls"
-	"crypto/x509"
-	"fmt"
 	pb "gRPCTest/helloworld"
-	"io/ioutil"
 	"log"
 	"time"
 
@@ -17,41 +13,19 @@ import (
 
 const (
 	AkbarCA    = "/var/www/SSL/adinterface.adsrecognition.com.crt"
-	ClientCert = "/var/www/SSL/client.crt"
+	ClientCert = "/var/www/SSL/ca.cert"
 	ClientKey  = "/var/www/SSL/client.key"
 	ServerName = "server"
 )
 
 func main() {
 	log.Println("Client running ...")
-
-	// Load certs from the d
-	cert, err := tls.LoadX509KeyPair(ClientCert, ClientKey)
+	creds, err := credentials.NewClientTLSFromFile("/etc/letsencrypt/live/adinterface.adsrecognition.com-0002/fullchain.pem;", "localhost")
 	if err != nil {
-		fmt.Printf("Could not load client key pair : %v", err)
+		log.Fatalln(err)
 	}
-
-	// Create certpool from the CA
-	certPool := x509.NewCertPool()
-	ca, err := ioutil.ReadFile(AkbarCA)
-	if err != nil {
-		fmt.Printf("Could not read Cert CA : %v", err)
-	}
-
-	// Append the certs from the CA
-	if ok := certPool.AppendCertsFromPEM(ca); !ok {
-		fmt.Printf("Failed to append CA cert : %v", err)
-	}
-
-	// Create transport creds based on TLS.
-	creds := credentials.NewTLS(&tls.Config{
-		ServerName:   ServerName,
-		Certificates: []tls.Certificate{cert},
-		RootCAs:      certPool,
-	})
 
 	opts := []grpc.DialOption{
-		// grpc.WithInsecure(),
 		grpc.WithTransportCredentials(creds),
 		grpc.WithBlock(),
 	}
